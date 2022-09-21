@@ -17,7 +17,7 @@ class SubSystemMenuWidget extends StatefulWidget {
 
 class _SubSystemMenuWidgetState extends State<SubSystemMenuWidget> {
   final String hostName = 'https://userpageuat.azurewebsites.net';
-  final String uri = '/api/GetMenu';
+  final String uri = '/api/GetSystemMenu';
   final String code =
       'iTAx69vL/UuhBflxh82uUiwSd1XaFAneFbFWs/OhpJT5jKgzK85vbg==';
   final String env = 'uat';
@@ -151,7 +151,7 @@ class BaseResponsObj {
 
   factory BaseResponsObj.fromMap(Map<String, dynamic> map) {
     int errorCode = map['ErrorCode'];
-    String errorMessage = map['ErrorMessage'];
+    String errorMessage = map['RetMessage'];
     String token = map['token'];
     UserInfo userInfo;
     List<Menu> menuList = [];
