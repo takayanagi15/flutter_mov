@@ -12,6 +12,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool _isObscure = true;
+
   // final String serverName = Config.
   final String hostName = 'https://userpageuat.azurewebsites.net/api/Login';
   final String code =
@@ -74,9 +76,21 @@ class _LoginPageState extends State<LoginPage> {
                     Text("パスワード"),
                     TextFormField(
                       controller: passWordContor,
-                      decoration: const InputDecoration(
-                        fillColor: Colors.white,
-                        filled: true,
+                      obscureText: _isObscure,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        suffixIcon: IconButton(
+                          // 文字の表示・非表示でアイコンを変える
+                          icon: Icon(_isObscure
+                              ? Icons.visibility_off
+                              : Icons.visibility),
+                          // アイコンがタップされたら現在と反対の状態をセットする
+                          onPressed: () {
+                            setState(() {
+                              _isObscure = !_isObscure;
+                            });
+                          },
+                        ),
                       ),
                     ),
                     ElevatedButton(
