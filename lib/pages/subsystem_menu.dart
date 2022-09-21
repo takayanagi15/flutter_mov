@@ -1,9 +1,15 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'login.dart';
+import 'searchMill.dart';
 
 class SubSystemMenuWidget extends StatefulWidget {
-  const SubSystemMenuWidget({super.key});
+  final String token;
+  final UserInfo userInfoObj;
+
+  const SubSystemMenuWidget(
+      {super.key, required this.token, required this.userInfoObj});
 
   @override
   State<SubSystemMenuWidget> createState() => _SubSystemMenuWidgetState();
@@ -15,7 +21,9 @@ class _SubSystemMenuWidgetState extends State<SubSystemMenuWidget> {
   final String code =
       'iTAx69vL/UuhBflxh82uUiwSd1XaFAneFbFWs/OhpJT5jKgzK85vbg==';
   final String env = 'uat';
-  final String token = 'a60165f0-cdbb-4b24-a37b-be93e48c9862';
+  // 全画面より渡されたtokenを取得　build以前に参照したい場合は　late final で取得する。
+  late final String token = widget.token;
+  late final UserInfo userInfoObj = widget.userInfoObj;
 
   BaseResponsObj? resMenuObj;
 
@@ -72,11 +80,11 @@ class _SubSystemMenuWidgetState extends State<SubSystemMenuWidget> {
                   width: 300,
                 ),
                 Text(
-                  "会社名",
+                  resMenuObj?.userInfo.companyName ?? "",
                   style: TextStyle(color: Colors.white, fontSize: 20.0),
                 ),
                 Text(
-                  "ログイン名",
+                  resMenuObj?.userInfo.name ?? "",
                   style: TextStyle(color: Colors.white, fontSize: 20.0),
                 )
               ],
@@ -92,6 +100,14 @@ class _SubSystemMenuWidgetState extends State<SubSystemMenuWidget> {
             child: ListTile(
               onTap: () {
                 print(index.toString() + "行をクリック");
+                if (menu.srcId == 'MillSearchInput') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SearchMillWidget(
+                            token: token, userInfoObj: userInfoObj)),
+                  );
+                }
               },
               title: Text(menu.title),
               subtitle: Text(menu.subTitle),
@@ -161,34 +177,6 @@ class BaseResponsObj {
       token: token,
       userInfo: userInfo,
       menuList: menuList,
-    );
-  }
-}
-
-class UserInfo {
-  final String userId;
-  final String name;
-  final String companyId;
-  final String companyName;
-  final int userAuth;
-  final int companyAuth;
-
-  UserInfo(
-      {required this.userId,
-      required this.name,
-      required this.companyId,
-      required this.companyName,
-      required this.userAuth,
-      required this.companyAuth});
-
-  factory UserInfo.fromMap(Map<String, dynamic> map) {
-    return UserInfo(
-      userId: map['userId'],
-      name: map['name'],
-      companyId: map['companyId'],
-      companyName: map['companyName'],
-      userAuth: map['userAuth'],
-      companyAuth: map['companyAuth'],
     );
   }
 }

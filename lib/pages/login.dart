@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
+import '../util/config.dart';
+import 'subsystem_menu.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -10,6 +12,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  // final String serverName = Config.
   final String hostName = 'https://userpageuat.azurewebsites.net/api/Login';
   final String code =
       'iTAx69vL/UuhBflxh82uUiwSd1XaFAneFbFWs/OhpJT5jKgzK85vbg==';
@@ -17,6 +20,8 @@ class _LoginPageState extends State<LoginPage> {
 
   final userIdContor = TextEditingController();
   final passWordContor = TextEditingController();
+
+  var CircularProgressIndicatorFlg = false;
 
   Future<BaseResponsObj> getLoginResponseObj(
       String userIdStr, String passWordStr) async {
@@ -42,66 +47,90 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    // setState(() {}); // 画面を更新したいので setState も呼んでおきます
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return SafeArea(
+      child: Scaffold(
         // body プロパティに Row を与えます。
-        body: Column(
-          // children プロパティに Text のリストを与えます。
+        body: Stack(
+          alignment: Alignment.center,
           children: [
-            Text("ユーザID"),
-            TextFormField(
-              controller: userIdContor,
-              decoration: const InputDecoration(
-                fillColor: Colors.white,
-                filled: true,
-              ),
-            ),
-            Text("パスワード"),
-            TextFormField(
-              controller: passWordContor,
-              decoration: const InputDecoration(
-                fillColor: Colors.white,
-                filled: true,
-              ),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  textStyle: const TextStyle(fontSize: 20)),
-              onPressed: () async {
-                final BaseResponsObj resObj = await getLoginResponseObj(
-                    userIdContor.text, passWordContor.text);
-                // ログイン成功
-                if (resObj.errorCode == 0) {
-                  print("ログイン成功");
-                } else {
-                  // ログイン失敗時はダイアログ表示
-                  showDialog(
-                    context: context,
-                    builder: (_) {
-                      return AlertDialog(
-                        title: const Text('ログイン失敗'),
-                        scrollable: true,
-                        content: const Text('ログインIDまたはパスワードが違います。'),
-                        actions: <Widget>[
-                          TextButton(
-                            child: const Text('OK'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
+            AutofillGroup(
+              child: SingleChildScrollView(
+                child: Column(
+                  // children プロパティに Text のリストを与えます。
+                  children: [
+                    Text("ユーザID"),
+                    TextFormField(
+                      autofillHints: [AutofillHints.email],
+                      controller: userIdContor,
+                      decoration: const InputDecoration(
+                        fillColor: Colors.white,
+                        filled: true,
+                      ),
+                    ),
+                    Text("パスワード"),
+                    TextFormField(
+                      controller: passWordContor,
+                      decoration: const InputDecoration(
+                        fillColor: Colors.white,
+                        filled: true,
+                      ),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          textStyle: const TextStyle(fontSize: 20)),
+                      onPressed: () async {
+                        CircularProgressIndicatorFlg = true;
+                        setState(() {}); // 画面を更新したいので setState も呼んでおきます
+
+                        final BaseResponsObj resObj = await getLoginResponseObj(
+                            userIdContor.text, passWordContor.text);
+                        // ログイン成功
+                        if (resObj.errorCode == 0) {
+                          print("ログイン成功");
+                          CircularProgressIndicatorFlg = true;
+                          setState(() {}); // 画面を更新したいので setState も呼んでおきます
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SubSystemMenuWidget(
+                                    token: resObj.token,
+                                    userInfoObj: resObj.userInfo)),
+                          );
+                          CircularProgressIndicatorFlg = false;
+                          setState(() {}); // 画面を更新したいので setState も呼んでおきます
+                        } else {
+                          // ログイン失敗時はダイアログ表示
+                          showDialog(
+                            context: context,
+                            builder: (_) {
+                              return AlertDialog(
+                                title: const Text('ログイン失敗'),
+                                scrollable: true,
+                                content: const Text('ログインIDまたはパスワードが違います。'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: const Text('OK'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
                             },
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                }
-              },
-              child: const Text('ログイン'),
+                          );
+                        }
+                      },
+                      child: const Text('ログイン'),
+                    ),
+                  ],
+                ),
+              ),
             ),
+            if (CircularProgressIndicatorFlg) CircularProgressIndicator(),
           ],
         ),
       ),

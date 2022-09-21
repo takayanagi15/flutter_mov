@@ -2,14 +2,26 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 
+import 'package:flutter_mov/pages/login.dart';
+
+import 'millSheetList.dart';
+
 class SearchMillWidget extends StatefulWidget {
-  const SearchMillWidget({super.key});
+  final String token;
+  final UserInfo userInfoObj;
+
+  const SearchMillWidget(
+      {super.key, required this.token, required this.userInfoObj});
 
   @override
   State<SearchMillWidget> createState() => _SearchMillWidgetState();
 }
 
 class _SearchMillWidgetState extends State<SearchMillWidget> {
+  // 全画面より渡されたtokenを取得　build以前に参照したい場合は　late final で取得する。
+  late final String token = widget.token;
+  late final UserInfo userInfoObj = widget.userInfoObj;
+
   final serialNoController = TextEditingController();
 
   @override
@@ -39,11 +51,11 @@ class _SearchMillWidgetState extends State<SearchMillWidget> {
                   width: 300,
                 ),
                 Text(
-                  "会社名",
+                  userInfoObj.companyName,
                   style: TextStyle(color: Colors.white, fontSize: 20.0),
                 ),
                 Text(
-                  "ログイン名",
+                  userInfoObj.name,
                   style: TextStyle(color: Colors.white, fontSize: 20.0),
                 )
               ],
@@ -51,46 +63,74 @@ class _SearchMillWidgetState extends State<SearchMillWidget> {
           ],
         ),
       ),
-      body: Column(
-        // children プロパティに Text のリストを与えます。
-        children: [
-          Text("鉄鋼メーカー/Steel Mill"),
-          TextFormField(
-            decoration: const InputDecoration(
-              fillColor: Colors.white,
-              filled: true,
+      body: SingleChildScrollView(
+        child: Column(
+          // children プロパティに Text のリストを与えます。
+          children: [
+            Text("鉄鋼メーカー/Steel Mill"),
+            TextFormField(
+              decoration: const InputDecoration(
+                fillColor: Colors.white,
+                filled: true,
+              ),
             ),
-          ),
-          Text("寸法/Size"),
-          TextFormField(
-            decoration: const InputDecoration(
-              fillColor: Colors.white,
-              filled: true,
+            Text("寸法/Size"),
+            TextFormField(
+              decoration: const InputDecoration(
+                fillColor: Colors.white,
+                filled: true,
+              ),
             ),
-          ),
-          Text("規格/Specification"),
-          TextFormField(
-            decoration: const InputDecoration(
-              fillColor: Colors.white,
-              filled: true,
+            Text("規格/Specification"),
+            TextFormField(
+              decoration: const InputDecoration(
+                fillColor: Colors.white,
+                filled: true,
+              ),
             ),
-          ),
-          Text("個体管理番号/Roll No."),
-          TextFormField(
-            controller: serialNoController,
-            decoration: const InputDecoration(
-              fillColor: Colors.white,
-              filled: true,
+            Text("個体管理番号/Roll No."),
+            TextFormField(
+              controller: serialNoController,
+              decoration: const InputDecoration(
+                fillColor: Colors.white,
+                filled: true,
+              ),
             ),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                textStyle: const TextStyle(fontSize: 20)),
-            onPressed: () async {},
-            child: const Text('検索'),
-          ),
-        ],
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  textStyle: const TextStyle(fontSize: 20)),
+              onPressed: () {
+                SearchObj searchObj = SearchObj(
+                    buyerId: "",
+                    serialNo: serialNoController.text,
+                    size: "",
+                    specification: "");
+                print(searchObj.serialNo);
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MillSheetListWidget(
+                            token: token,
+                            userInfoObj: userInfoObj,
+                            searchObj: searchObj,
+                          )),
+                );
+              },
+              child: const Text('検索'),
+            ),
+          ],
+        ),
       ),
     );
   }
+}
+
+class SearchObj {
+  final String? buyerId;
+  final String? specification;
+  final String? size;
+  final String? serialNo;
+
+  SearchObj({this.buyerId, this.specification, this.size, this.serialNo});
 }
