@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.flutter_mov">
+    package="jp.serendipy.flutter_mov">
    <application
         android:label="flutter_mov"
         android:name="${applicationName}"

@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import '../util/config.dart';
 import 'subsystem_menu.dart';
 
 class LoginPage extends StatefulWidget {
@@ -23,7 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   final userIdContor = TextEditingController();
   final passWordContor = TextEditingController();
 
-  var CircularProgressIndicatorFlg = false;
+  var circularProgressIndicatorFlg = false;
 
   Future<BaseResponsObj> getLoginResponseObj(
       String userIdStr, String passWordStr) async {
@@ -97,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                       style: ElevatedButton.styleFrom(
                           textStyle: const TextStyle(fontSize: 20)),
                       onPressed: () async {
-                        CircularProgressIndicatorFlg = true;
+                        circularProgressIndicatorFlg = true;
                         setState(() {}); // 画面を更新したいので setState も呼んでおきます
 
                         final BaseResponsObj resObj = await getLoginResponseObj(
@@ -105,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                         // ログイン成功
                         if (resObj.errorCode == 0) {
                           print("ログイン成功");
-                          CircularProgressIndicatorFlg = true;
+                          circularProgressIndicatorFlg = true;
                           setState(() {}); // 画面を更新したいので setState も呼んでおきます
                           Navigator.push(
                             context,
@@ -114,7 +113,7 @@ class _LoginPageState extends State<LoginPage> {
                                     token: resObj.token,
                                     userInfoObj: resObj.userInfo)),
                           );
-                          CircularProgressIndicatorFlg = false;
+                          circularProgressIndicatorFlg = false;
                           setState(() {}); // 画面を更新したいので setState も呼んでおきます
                         } else {
                           // ログイン失敗時はダイアログ表示
@@ -144,7 +143,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
-            if (CircularProgressIndicatorFlg) CircularProgressIndicator(),
+            if (circularProgressIndicatorFlg) CircularProgressIndicator(),
           ],
         ),
       ),
