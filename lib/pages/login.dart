@@ -106,13 +106,13 @@ class _LoginPageState extends State<LoginPage> {
                           print("ログイン成功");
                           circularProgressIndicatorFlg = true;
                           setState(() {}); // 画面を更新したいので setState も呼んでおきます
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SubSystemMenuWidget(
-                                    token: resObj.token,
-                                    userInfoObj: resObj.userInfo)),
-                          );
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //       builder: (context) => SubSystemMenuWidget(
+                          //           token: resObj.token,
+                          //           userInfoObj: resObj.userInfo)),
+                          // );
                           circularProgressIndicatorFlg = false;
                           setState(() {}); // 画面を更新したいので setState も呼んでおきます
                         } else {

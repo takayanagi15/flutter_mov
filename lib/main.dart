@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'pages/login.dart';
-import 'pages/millSheetList.dart';
-import 'pages/subsystem_menu.dart';
-import 'pages/searchMill.dart';
-import 'pages/tableSample.dart';
+// import 'pages/login.dart';
+import 'pages/login_new.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +20,8 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       // home: MillSheetListWidget(),
       // home: MillSheetListWidget(),
-      home: LoginPage(),
+      // home: LoginPage(),
+      home: loginValidate(),
     );
   }
 }
